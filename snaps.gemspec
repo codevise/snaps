@@ -14,10 +14,23 @@ Gem::Specification.new do |s|
   s.description = "TODO: Description of Snaps."
   s.license     = "MIT"
 
-  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
-  s.test_files = Dir["test/**/*"]
+  s.files = Dir["{app,config,db,lib,spec/factories}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
+
+  s.test_files = Dir["spec/**/*"]
 
   s.add_dependency "rails", "~> 4.2.1"
 
   s.add_development_dependency "sqlite3"
+
+  # Testing framework
+  s.add_development_dependency 'rspec-rails', '~> 2.14'
+
+  # Browser like integration testing
+  s.add_development_dependency 'capybara', '~> 2.4'
+
+  # Headless browser testing
+  s.add_development_dependency 'capybara-webkit', '~> 1.3'
+
+  # Fixture replacement
+  s.add_development_dependency 'factory_girl_rails', '~> 4.5'
 end
