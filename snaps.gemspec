@@ -25,11 +25,7 @@ Gem::Specification.new do |s|
   # Testing framework
   s.add_development_dependency 'rspec-rails', '~> 2.14'
 
-  # Browser like integration testing
-  s.add_development_dependency 'capybara', '~> 2.4'
-
-  # Headless browser testing
-  s.add_development_dependency 'capybara-webkit', '~> 1.3'
+  s.add_development_dependency 'timecop'
 
   # Fixture replacement
   s.add_development_dependency 'factory_girl_rails', '~> 4.5'

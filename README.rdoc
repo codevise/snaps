@@ -1,4 +1,132 @@
-= Snaps
+# Snaps
 
-This project rocks and uses MIT-LICENSE.
+Revisioning and tagging of ActiveRecord models.
 
+## Installation
+
+Add this line to your application's Gemfile:
+
+    gem 'snaps'
+
+And then execute:
+
+    $ bundle
+
+Run the install generator:
+
+    $ rails generate snaps:install
+
+Migrate your database to create the `snaps_tags` table:
+
+    $ rake db:migrate
+
+## Usage
+
+    # db/migrate/xxx_create_posts.rb
+
+    create_table :posts do |t|
+      t.integer(:perma_id)
+
+      t.string(:title)
+      t.text(:body)
+    end
+
+
+### Variant 1
+
+    # app/models/post.rb
+
+    class Post < ActiveRecord::Base
+      include Snaps.revision(default_tag: :draft)
+
+      scope :draft, -> { with_snaps_tag(:draft) }
+      scope :published, -> { with_snaps_tag(:published) }
+      scope :published_revisions, -> { with_snaps_tag(:published,
+all_revisions: true) }
+
+      def previous_published_revisions
+        snaps_revisions.published.where('created_at < ?', created_at)
+      end
+
+      def publish
+        snaps_tag!(:published)
+      end
+
+      def self.find_head(perma_id)
+        with_snaps_tag(:head).find_by_perma_id(perma_id)
+      end
+
+      def commit_attributes(attributes)
+        self.attributes = attributes
+        r = snapshot!(tag: :head)
+        reset
+        r
+      end
+    end
+
+    post = Post.find_head
+
+    post = post.change(title:
+
+
+
+Getting the draft
+
+    post = Posts.create
+
+
+    post = Post.create
+    post.class # => Post
+
+    post.update(body: 'Some text')
+    post.snapshot!
+
+
+
+    post.previous_revisions
+    post.previous_published_revisions
+
+
+    post.snapshot!(tag: :submission)
+
+
+    submitted_post = Post.submitted.find_by_perma_id(params[:id])
+    submitted_post.tag!(:published
+
+    published_post = Post.published.find_by_perma_id(params[:id])
+
+
+    Post.all
+    publication_history =
+Post.published_revisions.find_all_by_perma_id(params[:id])
+
+
+    post = Post.create
+
+    post.snapshot!(tag: :draft)
+
+
+
+
+    post = Post.find_head(15)
+    post.title = "Changed"
+    post.snapshot!(tag: :head)
+
+
+
+Impl
+
+    module Snaps
+      def self.revision(options)
+        Module.new(:aa) do
+          extend ActiveSupport::Concern
+
+          included do
+            scope :draft, -> { with_snaps_tag(:draft) }
+          end
+
+          module ClassMethods
+          end
+        end
+      end
+    end

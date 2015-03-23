@@ -1,0 +1,8 @@
+require 'spec_helper'
+
+describe "Snaps.revision" do
+  it "provides #with_snaps_tags method" do
+    post = xcreate(:post)
+    expect(post).not_to be_new_record
+  end
+end
