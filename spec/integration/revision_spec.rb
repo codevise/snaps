@@ -12,7 +12,7 @@ describe "Snaps.revision" do
   it "creates a default tag when a new revisioned record is created" do
     post = create(:post)
 
-    tag = Snaps::Tag.find_by(record_perma_id: post.perma_id)
+    tag = Snaps::Tag.find_by(record: post)
 
     expect(tag.tag).to eq("draft")
   end
@@ -70,7 +70,7 @@ describe "Snaps.revision" do
       post = create(:post)
       tag = post.snaps_tag!(:published)
 
-      expect(tag.record_perma_id).to eq(post.perma_id)
+      expect(tag.record).to eq(post)
       expect(tag.tag).to eq("published")
     end
 

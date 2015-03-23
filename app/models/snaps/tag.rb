@@ -1,12 +1,9 @@
 module Snaps
   class Tag < ActiveRecord::Base
+    belongs_to :record, polymorphic: true
 
     before_save do |tag|
-      Tag.with_name(tag.tag).where(record_perma_id: tag.record_perma_id).current.supersede!
-    end
-
-    scope :for_all_revisions_of, ->(record) do
-      where(record_perma_id: record.perma_id, record_type: record.class.table_name)
+      Tag.join_model(tag.record.class, tag.tag).where("perma_id = ?", tag.record.perma_id).current.supersede!
     end
 
     scope :current, -> do
@@ -21,11 +18,21 @@ module Snaps
       update_all(succeeded_at: Time.now)
     end
 
-    def self.join_to_model(model, tag, options)
+
+    def self.join_model(model, tag)
+      joins(<<-SQL)
+        INNER JOIN #{model.table_name}
+        ON #{model.table_name}.id = snaps_tags.record_id
+        AND snaps_tags.record_type = '#{model.name}'
+        AND snaps_tags.tag = '#{tag}'
+      SQL
+    end
+
+    def self.join_to_model(model, tag, options = {})
       query = model.joins(<<-SQL)
         INNER JOIN snaps_tags
         ON #{model.table_name}.id = snaps_tags.record_id
-        AND snaps_tags.record_type = '#{model.table_name}'
+        AND snaps_tags.record_type = '#{model.name}'
         AND snaps_tags.tag = '#{tag}'
       SQL
 

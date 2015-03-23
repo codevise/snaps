@@ -24,9 +24,7 @@ module Snaps
 
       def snaps_tag!(tag)
         Tag.create!(
-          record_id: id,
-          record_perma_id: perma_id,
-          record_type: self.class.table_name,
+          record: self,
           tag: tag
         )
       end
