@@ -40,7 +40,11 @@ module Snaps
 
       class_methods do
         def with_snaps_tag(tag, options={})
-          Tag.join_to_model(self, tag, options)
+          if options[:all_revisions]
+            Tag.all_revisions_with_tag(self, tag)
+          else
+            Tag.current_revisions_with_tag(self, tag)
+          end
         end
 
         define_method :snaps_options do
