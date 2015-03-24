@@ -14,16 +14,24 @@ And then execute:
 
 Run the install generator:
 
-    $ rails generate snaps:install
+    $ rake snaps:install:migrations
 
 Migrate your database to create the `snaps_tags` table:
 
     $ rake db:migrate
 
+## Basics
+
+Snaps maintains a table of "named pointers" or Tags to other models. Implemented as a polimorphic association. Revisions are kept in the original table and identified by a perma_id field.
+
+Snaps provides methods to create copies (snapshots) of models and tag these snapshots as needed.
+
+
 ## Usage
 
-    # db/migrate/xxx_create_posts.rb
+A model that is to be revisioned with snaps needs an integer field called `perma_id` and must include the mixin returnd by `Snaps.revision`.
 
+    # db/migrate/xxx_create_posts.rb
     create_table :posts do |t|
       t.integer(:perma_id)
 
@@ -32,17 +40,13 @@ Migrate your database to create the `snaps_tags` table:
     end
 
 
-### Variant 1
-
     # app/models/post.rb
-
     class Post < ActiveRecord::Base
       include Snaps.revision(default_tag: :draft)
 
       scope :draft, -> { with_snaps_tag(:draft) }
       scope :published, -> { with_snaps_tag(:published) }
-      scope :published_revisions, -> { with_snaps_tag(:published,
-all_revisions: true) }
+      scope :published_revisions, -> { with_snaps_tag(:published, all_revisions: true) }
 
       def previous_published_revisions
         snaps_revisions.published.where('created_at < ?', created_at)
@@ -51,23 +55,7 @@ all_revisions: true) }
       def publish
         snaps_tag!(:published)
       end
-
-      def self.find_head(perma_id)
-        with_snaps_tag(:head).find_by_perma_id(perma_id)
-      end
-
-      def commit_attributes(attributes)
-        self.attributes = attributes
-        r = snapshot!(tag: :head)
-        reset
-        r
-      end
     end
-
-    post = Post.find_head
-
-    post = post.change(title:
-
 
 
 Getting the draft
@@ -105,28 +93,6 @@ Post.published_revisions.find_all_by_perma_id(params[:id])
 
     post.snapshot!(tag: :draft)
 
-
-
-
     post = Post.find_head(15)
     post.title = "Changed"
     post.snapshot!(tag: :head)
-
-
-
-Impl
-
-    module Snaps
-      def self.revision(options)
-        Module.new(:aa) do
-          extend ActiveSupport::Concern
-
-          included do
-            scope :draft, -> { with_snaps_tag(:draft) }
-          end
-
-          module ClassMethods
-          end
-        end
-      end
-    end
