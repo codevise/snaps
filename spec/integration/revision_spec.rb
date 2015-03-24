@@ -82,7 +82,7 @@ describe "Snaps.revision" do
 
       tag.reload
 
-      expect(tag.succeeded_at).to be_present
+      expect(tag.superseded_at).to be_present
     end
 
     it 'does not supersede tags with different tagnames' do
@@ -93,7 +93,7 @@ describe "Snaps.revision" do
 
       tag.reload
 
-      expect(tag.succeeded_at).to be_blank
+      expect(tag.superseded_at).to be_blank
     end
 
     it 'does not change already superseded tags' do
@@ -109,7 +109,7 @@ describe "Snaps.revision" do
 
         superseded_tag.reload
 
-        expect(superseded_tag.succeeded_at).to eq(2.weeks.ago)
+        expect(superseded_tag.superseded_at).to eq(2.weeks.ago)
       end
     end
   end

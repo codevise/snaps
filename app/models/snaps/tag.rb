@@ -7,7 +7,7 @@ module Snaps
     end
 
     scope :current, -> do
-      where(succeeded_at: nil)
+      where(superseded_at: nil)
     end
 
     scope :with_name, ->(name) do
@@ -15,9 +15,8 @@ module Snaps
     end
 
     def self.supersede!
-      update_all(succeeded_at: Time.now)
+      update_all(superseded_at: Time.now)
     end
-
 
     def self.join_model(model, tag)
       joins(<<-SQL)
@@ -39,7 +38,7 @@ module Snaps
       if options[:all_revisions]
         query
       else
-        query.where('snaps_tags.succeeded_at IS NULL')
+        query.where('snaps_tags.superseded_at IS NULL')
       end
     end
   end

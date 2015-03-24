@@ -4,9 +4,8 @@ class CreateSnapsTags < ActiveRecord::Migration
     create_table :snaps_tags do |t|
       t.integer :record_id
       t.string :record_type
-      t.integer :record_perma_id
       t.string :tag
-      t.timestamp :succeeded_at
+      t.timestamp :superseded_at
 
       t.timestamps null: false
     end

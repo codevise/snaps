@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150323173024) do
+ActiveRecord::Schema.define(version: 20150324074047) do
 
   create_table "posts", force: :cascade do |t|
     t.integer  "perma_id"
@@ -32,11 +32,10 @@ ActiveRecord::Schema.define(version: 20150323173024) do
   create_table "snaps_tags", force: :cascade do |t|
     t.integer  "record_id"
     t.string   "record_type"
-    t.integer  "record_perma_id"
     t.string   "tag"
-    t.datetime "succeeded_at"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "superseded_at"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
 end

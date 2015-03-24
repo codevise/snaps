@@ -7,9 +7,9 @@ require "snaps/version"
 Gem::Specification.new do |s|
   s.name        = "snaps"
   s.version     = Snaps::VERSION
-  s.authors     = ["Vangelis Tsoumenis"]
-  s.email       = ["kioopi@gmail.com"]
-  s.homepage    = "TODO"
+  s.authors     = ['Codevise Solutions Ltd']
+  s.email       = ['info@codevise.de']
+  s.homepage    = "https://github.com/codevise/snaps"
   s.summary     = "TODO: Summary of Snaps."
   s.description = "TODO: Description of Snaps."
   s.license     = "MIT"
