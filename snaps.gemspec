@@ -10,11 +10,11 @@ Gem::Specification.new do |s|
   s.authors     = ['Codevise Solutions Ltd']
   s.email       = ['info@codevise.de']
   s.homepage    = "https://github.com/codevise/snaps"
-  s.summary     = "TODO: Summary of Snaps."
+  s.summary     = "Revisioning and tagging of ActiveRecord models."
   s.description = "TODO: Description of Snaps."
   s.license     = "MIT"
 
-  s.files = Dir["{app,config,db,lib,spec/factories}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib,spec/factories}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
   s.test_files = Dir["spec/**/*"]
 
