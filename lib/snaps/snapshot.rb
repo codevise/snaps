@@ -7,7 +7,10 @@ module Snaps
     def create
       copy = record.dup
       yield(copy) if block_given?
-      copy.save
+
+      Tag.suppress do
+        copy.save
+      end
 
       copy.snaps_tag!(options[:tag]) if options[:tag]
 

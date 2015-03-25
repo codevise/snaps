@@ -42,7 +42,14 @@ describe "Snaps.revision" do
 
       expect(is_new_record).to be(true)
       expect(snapshot.reload.title).to eq('zwei titel')
+    end
 
+    it 'does not create a default tag' do
+      post = create(:post, title: 'ein titel')
+
+      expect {
+        post.snapshot!
+      }.not_to change { Snaps::Tag.count }
     end
 
     it 'can tag the new record' do
