@@ -13,7 +13,6 @@ module Snaps
             snaps_tag!(options[:default_tag])
           end
         end
-
       end
 
       def snapshot!(options = {}, &block)
@@ -29,10 +28,16 @@ module Snaps
         )
       end
 
+      def snaps_untag!(tag)
+        Tag
+          .for_all_revisions_of(self)
+          .with_name(tag)
+          .supersede!
+      end
+
       def snaps_revisions
          self.class.where(perma_id: perma_id)
       end
-
 
       def ensure_perma_id
         self.perma_id ||= (self.class.maximum(:perma_id) || 0) + 1

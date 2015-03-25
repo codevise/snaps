@@ -1,13 +1,11 @@
 module Snaps
   class Tag < ActiveRecord::Base
+    include Suppressor
+
     belongs_to :record, polymorphic: true
 
     before_save do |tag|
-      Tag
-        .for_all_revisions_of(tag.record)
-        .with_name(tag.tag)
-        .current
-        .supersede!
+      tag.record.snaps_untag!(tag.tag)
     end
 
     scope :current, -> do
@@ -19,7 +17,7 @@ module Snaps
     end
 
     def self.supersede!
-      update_all(superseded_at: Time.now)
+      current.update_all(superseded_at: Time.now)
     end
 
     def self.for_all_revisions_of(record)
