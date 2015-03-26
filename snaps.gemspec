@@ -29,4 +29,7 @@ Gem::Specification.new do |s|
 
   # Fixture replacement
   s.add_development_dependency 'factory_girl_rails', '~> 4.5'
+
+  # Test coverage
+  s.add_development_dependency 'codeclimate-test-reporter'
 end
