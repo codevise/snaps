@@ -6,4 +6,6 @@ rvm: 2.0
 sudo: false
 cache: bundler
 
+before_script: bundle exec rake app:db:schema:load
+
 script: bundle exec rspec
