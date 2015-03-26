@@ -122,12 +122,16 @@ describe "Snaps.revision" do
   end
 
   describe '#snaps_untag!' do
+    def tag_count_for(record, tag)
+      Snaps::Tag.for_all_revisions_of(record).with_name(tag).current.count
+    end
+
     it "supersedes tag on a record" do
       post = create(:post, title: 'ein titel')
 
       expect {
         post.snaps_untag!(:draft)
-      }.to change { Snaps::Tag.for_all_revisions_of(post).with_name(:draft).current.count }.by(-1)
+      }.to change { tag_count_for(post, :draft) }.by(-1)
     end
 
     it "does not supersede other tags" do
@@ -136,7 +140,7 @@ describe "Snaps.revision" do
 
       expect {
         post.snaps_untag!(:draft)
-      }.not_to change { Snaps::Tag.for_all_revisions_of(post).with_name(:published).current.count }
+      }.not_to change { tag_count_for(post, :published) }
     end
 
     it "does not supersede other records" do
@@ -145,7 +149,7 @@ describe "Snaps.revision" do
 
       expect {
         post1.snaps_untag!(:draft)
-      }.not_to change { Snaps::Tag.for_all_revisions_of(post2).with_name(:draft).current.count }
+      }.not_to change { tag_count_for(post2, :draft) }
     end
   end
 
