@@ -27,7 +27,7 @@ Migrate your database to create the `snaps_tags` table:
 
 ## Basics
 
-Snaps maintains a table of "named pointers" called Tags to other models. Implemented as a polimorphic association. Revisions are kept in the original table and identified by a `perma_id` field.
+Snaps maintains a table of "named pointers" called Tags to other models. Implemented as a polymorphic association. Revisions are kept in the original table and identified by a `perma_id` field.
 
 Snaps provides methods to create copies (snapshots) of models and tag these snapshots as needed.
 
