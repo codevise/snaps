@@ -1,5 +1,10 @@
 # Snaps
 
+[![Gem Version](https://badge.fury.io/rb/snaps.svg)](http://badge.fury.io/rb/snaps)
+[![Build Status](https://travis-ci.org/codevise/snaps.svg?branch=master)](https://travis-ci.org/codevise/snaps)
+[![Test Coverage](https://codeclimate.com/github/codevise/snaps/badges/coverage.svg)](https://codeclimate.com/github/codevise/snaps)
+[![Code Climate](https://codeclimate.com/github/codevise/snaps/badges/gpa.svg)](https://codeclimate.com/github/codevise/snaps)
+
 Revisioning and tagging of ActiveRecord models.
 
 ## Installation
