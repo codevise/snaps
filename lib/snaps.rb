@@ -52,6 +52,10 @@ module Snaps
           end
         end
 
+        def without_snaps_tag(tag, options={})
+          Tag.all_revisions_without_tag(self, tag)
+        end
+
         define_method :snaps_options do
           options
         end

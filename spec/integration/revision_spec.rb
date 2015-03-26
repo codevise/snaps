@@ -167,11 +167,14 @@ describe "Snaps.revision" do
   end
 
   describe '.with_snaps_tag' do
-    it "returns list of records joined with snaps_tags" do
+    it "returns list of records tagged with snaps_tags" do
       post = create(:post)
       post.snaps_tag!(:published)
 
-      expect(Post.with_snaps_tag(:published).length).to eq(1)
+      posts = Post.with_snaps_tag(:published)
+
+      expect(posts.length).to eq(1)
+      expect(posts).to include(post)
     end
 
     it "does not return records with differnt tags" do
@@ -190,7 +193,7 @@ describe "Snaps.revision" do
       post = create(:post)
       post_snapshot = post.snapshot!
       post.snaps_tag!(:published)
-      post_snapshot.snaps_tag!(:published)
+      post_snapshot.snaps_tag!(:published) # obsoletes tag on post
 
       expect(Post.with_snaps_tag(:published).length).to eq(1)
       expect(Post.with_snaps_tag(:published).first).to eq(post_snapshot)
@@ -201,7 +204,7 @@ describe "Snaps.revision" do
         post = create(:post)
         post_snapshot = post.snapshot!
         post.snaps_tag!(:published)
-        post_snapshot.snaps_tag!(:published)
+        post_snapshot.snaps_tag!(:published) # obsoletes tag on post
 
         result = Post.with_snaps_tag(:published, all_revisions: true)
 
@@ -209,6 +212,39 @@ describe "Snaps.revision" do
         expect(result).to include(post_snapshot)
         expect(result).to include(post)
       end
+    end
+  end
+
+  describe '.without_snaps_tag' do
+    it "returns list of records not tagged with snaps_tags" do
+      post = create(:post)
+      published_post = post.snapshot!(tag: :published)
+
+      posts = Post.without_snaps_tag(:published)
+
+      expect(posts.length).to eq(1)
+      expect(posts).to include(post)
+      expect(posts).not_to include(published_post)
+    end
+  end
+
+  describe 'scope combinations' do
+    it 'are possible' do
+      a = create(:post)
+      a.snaps_tag!(:a)
+
+      b = create(:post)
+      b.snaps_tag!(:b)
+
+      ab = create(:post)
+      ab.snaps_tag!(:a)
+      ab.snaps_tag!(:b)
+
+      posts = Post.with_snaps_tag(:a).without_snaps_tag(:b)
+
+      expect(posts).not_to include(b)
+      expect(posts).not_to include(ab)
+      expect(posts).to include(a)
     end
   end
 end

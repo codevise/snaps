@@ -29,17 +29,31 @@ module Snaps
       SQL
     end
 
+    def self.all_revisions_without_tag(model, tag)
+      table_alias = "t_#{tag}"
+
+      query = model.joins(<<-SQL)
+        LEFT JOIN snaps_tags #{table_alias}
+        ON #{model.table_name}.id = #{table_alias}.record_id
+        AND #{table_alias}.record_type = '#{model.name}'
+        AND #{table_alias}.tag = '#{tag}'
+      SQL
+      query.where("#{table_alias}.tag IS NULL")
+    end
+
     def self.all_revisions_with_tag(model, tag)
+      table_alias = "t_#{tag}"
+
       model.joins(<<-SQL)
-        INNER JOIN snaps_tags
-        ON #{model.table_name}.id = snaps_tags.record_id
-        AND snaps_tags.record_type = '#{model.name}'
-        AND snaps_tags.tag = '#{tag}'
+        INNER JOIN snaps_tags #{table_alias}
+        ON #{model.table_name}.id = #{table_alias}.record_id
+        AND #{table_alias}.record_type = '#{model.name}'
+        AND #{table_alias}.tag = '#{tag}'
       SQL
     end
 
     def self.current_revisions_with_tag(model, tag)
-      all_revisions_with_tag(model, tag).where('snaps_tags.superseded_at IS NULL')
+      all_revisions_with_tag(model, tag).where("t_#{tag}.superseded_at IS NULL")
     end
   end
 end
