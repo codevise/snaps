@@ -44,6 +44,13 @@ describe "Snaps.revision" do
       expect(snapshot.reload.title).to eq('zwei titel')
     end
 
+    it "keeps create_at of record in snapshot" do
+      post = create(:post, title: 'ein titel')
+      snapshot = post.snapshot!
+
+      expect(post.created_at).to eq(snapshot.created_at)
+    end
+
     it 'does not create a default tag' do
       post = create(:post, title: 'ein titel')
 

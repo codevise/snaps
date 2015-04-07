@@ -6,6 +6,11 @@ module Snaps
 
     def create
       copy = record.dup
+
+      if record.respond_to?(:created_at)
+        copy.created_at = record.created_at
+      end
+
       yield(copy) if block_given?
 
       Tag.suppress do
