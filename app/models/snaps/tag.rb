@@ -30,30 +30,32 @@ module Snaps
     end
 
     def self.all_revisions_without_tag(model, tag)
-      table_alias = "t_#{tag}"
-
-      query = model.joins(<<-SQL)
-        LEFT JOIN snaps_tags #{table_alias}
-        ON #{model.table_name}.id = #{table_alias}.record_id
-        AND #{table_alias}.record_type = '#{model.name}'
-        AND #{table_alias}.tag = '#{tag}'
-      SQL
-      query.where("#{table_alias}.tag IS NULL")
+      model.joins(join_tags_sql('LEFT', model, tag)).where("#{table_alias(tag)}.tag IS NULL")
     end
 
     def self.all_revisions_with_tag(model, tag)
-      table_alias = "t_#{tag}"
-
-      model.joins(<<-SQL)
-        INNER JOIN snaps_tags #{table_alias}
-        ON #{model.table_name}.id = #{table_alias}.record_id
-        AND #{table_alias}.record_type = '#{model.name}'
-        AND #{table_alias}.tag = '#{tag}'
-      SQL
+      model.joins(join_tags_sql('INNER', model, tag))
     end
 
     def self.current_revisions_with_tag(model, tag)
-      all_revisions_with_tag(model, tag).where("t_#{tag}.superseded_at IS NULL")
+      all_revisions_with_tag(model, tag).where("#{table_alias(tag)}.superseded_at IS NULL")
+    end
+
+    private
+
+    def self.join_tags_sql(type, model, tag)
+      table = table_alias(tag)
+      (<<-SQL)
+        #{type} JOIN snaps_tags #{table}
+        ON #{model.table_name}.id = #{table}.record_id
+        AND #{table}.record_type = '#{model.name}'
+        AND #{table}.tag = '#{tag}'
+      SQL
+    end
+
+    def self.table_alias(tag)
+      @table_aliases ||= Hash.new {|h, t| h[t] = "t_#{t}" }
+      @table_aliases[tag]
     end
   end
 end
